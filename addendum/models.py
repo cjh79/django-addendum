@@ -9,6 +9,9 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+from wagtail.core.fields import RichTextField
 
 
 def set_cached_snippet(key):
@@ -98,7 +101,7 @@ class CachedManager(models.Manager):
         return snippet
 
 
-class Snippet(models.Model):
+class Snippet(ClusterableModel):
     """
     Model for storing snippets of text for replacement in templates.
 
@@ -107,7 +110,7 @@ class Snippet(models.Model):
     """
 
     key = models.CharField(max_length=250, primary_key=True)
-    text = models.TextField()
+    text = RichTextField()
     objects = CachedManager()
 
     class Meta:
@@ -133,11 +136,11 @@ class SnippetTranslation(models.Model):
     language.
     """
 
-    snippet = models.ForeignKey(
+    snippet = ParentalKey(
         Snippet, related_name="translations", on_delete=models.CASCADE
     )
     language = models.CharField(max_length=5)
-    text = models.TextField()
+    text = RichTextField()
 
     class Meta:
         unique_together = ("snippet", "language")
