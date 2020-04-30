@@ -1,6 +1,6 @@
-===============
-Django Addendum
-===============
+=========================
+Django Addendum (Wagtail)
+=========================
 
 .. image:: https://api.travis-ci.org/bennylope/django-addendum.svg?branch=master
     :alt: Build Status

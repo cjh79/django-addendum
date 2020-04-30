@@ -18,16 +18,20 @@ with open('README.rst') as f:
 
 
 setup(
-    name='django-addendum',
+    name='django-addendum-wagtail',
     version=addendum.__version__,
-    description='Simple template-based content swapping for CMS-less sites',
+    description='Simple template-based content swapping for use with the Wagtail CMS',
     long_description=readme,
-    author='Ben Lopatin',
-    author_email='ben.lopatin@wellfireinteractive.com',
-    url='https://github.com/bennylope/django-addendum',
+    author='Chris Hawes',
+    author_email='chrishawes@gmail.com',
+    url='https://github.com/cjh9/django-addendum-wagtail',
     license='BSD License',
     packages=find_packages(exclude=['tests']),
     platforms=['OS Independent'],
+    install_requires=[
+        'django',
+        'wagtail',
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
