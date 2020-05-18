@@ -2,6 +2,7 @@ import logging
 
 from django import template
 from django.template.base import TemplateSyntaxError
+from django.template.defaultfilters import striptags
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
@@ -30,7 +31,7 @@ def build_options(bits, tag_name):
         if option == "richtext":
             option = "safe"
 
-        if option not in ["safe", "template", "language"]:
+        if option not in ["safe", "striptags", "template", "language"]:
             raise TemplateSyntaxError("%s received an invalid option." % tag_name)
 
         options.update({option: val})
@@ -68,6 +69,7 @@ def snippet(parser, token):
 class SnippetNode(template.Node):
 
     safe = None
+    striptags = False
     template = None
     language = None
 
@@ -134,8 +136,16 @@ class SnippetNode(template.Node):
             except AttributeError:
                 self.safe = True
 
+        if self.striptags:
+            try:
+                self.striptags = self.striptags.resolve(context)
+            except AttributeError:
+                self.striptags = True
+
         if self.template:
             return self.render_as_template(context, snippet, default_text)
+        if self.striptags:
+            snippet = striptags(snippet)
         if self.safe:
             return mark_safe(snippet)
 

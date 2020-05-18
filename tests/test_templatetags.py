@@ -83,6 +83,42 @@ class TagTests(TestCase):
         result = t.render(c)
         self.assertEqual(result, "&lt;h1&gt;Hello, humans&lt;/h1&gt;")
 
+    def test_striptags(self):
+        """Ensure that with striptags argument set to True, HTML tags are stripped"""
+        t = Template(
+            """{% load addendum_tags %}{% snippet 'rich' striptags=True %}<p>Hello world</p>{% endsnippet %}"""
+        )
+        c = Context({})
+        result = t.render(c)
+        self.assertEqual(result, "Hello, humans")
+
+    def test_striptags_false(self):
+        """Ensure that with striptags argument set to False, HTML tags are not stripped"""
+        t = Template(
+            """{% load addendum_tags %}{% snippet 'rich' striptags=False %}<p>Hello world</p>{% endsnippet %}"""
+        )
+        c = Context({})
+        result = t.render(c)
+        self.assertEqual(result, "&lt;h1&gt;Hello, humans&lt;/h1&gt;")
+
+    def test_striptags_default(self):
+        """Ensure that with striptags is set to False by default"""
+        t = Template(
+            """{% load addendum_tags %}{% snippet 'rich' %}<p>Hello world</p>{% endsnippet %}"""
+        )
+        c = Context({})
+        result = t.render(c)
+        self.assertEqual(result, "&lt;h1&gt;Hello, humans&lt;/h1&gt;")
+
+    def test_striptags_with_safe(self):
+        """Ensure that with striptags is set to False by default"""
+        t = Template(
+            """{% load addendum_tags %}{% snippet 'rich' striptags=False safe=True %}<p>Hello world</p>{% endsnippet %}"""
+        )
+        c = Context({})
+        result = t.render(c)
+        self.assertEqual(result, "<h1>Hello, humans</h1>")
+
     def test_raw_template_text(self):
         """Ensure template code is not compiled by default"""
         t = Template(
